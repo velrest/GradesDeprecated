@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -45,6 +46,8 @@ public class SubjectActivity extends AppCompatActivity {
         toolbar.setTitle(CurrentSubject.SubjectName);
         findViewById(R.id.toolbar_layout).setBackgroundColor(Utilities.colorFromGrade(CurrentSubject.getSubjectAverage()));
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (fab != null) {
@@ -64,11 +67,6 @@ public class SubjectActivity extends AppCompatActivity {
                 }
             });
         }
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                finish();
-            }
-        });
         generateSubjectView();
     }
 
@@ -77,5 +75,15 @@ public class SubjectActivity extends AppCompatActivity {
         examAdapter = new ExamAdapter(CurrentSubject.exams,  CurrentSubject, (AppBarLayout) findViewById(R.id.app_bar), (TextView) findViewById(R.id.subject_average));
         examListView.setAdapter(examAdapter);
         examListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

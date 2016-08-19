@@ -37,30 +37,4 @@
 
     </RelativeLayout>
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="10pt"-->
-        <!--android:paddingLeft="5pt"-->
-        <!--android:paddingRight="5pt"-->
-        <!--android:id="@+id/info"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:height="1pt"-->
-        <!--android:background="#97e3fc"/>-->
-
-    <!--<EditText-->
-        <!--android:id="@+id/value"-->
-        <!--android:text="Test"-->
-        <!--android:textAlignment="center"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/save"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
-
 </LinearLayout>

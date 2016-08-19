@@ -31,11 +31,9 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
 
     private ArrayList<Subject> Subjects;
     private Context ActivityContext;
-    private Resources Texts;
 
-    public SubjectAdapter(ArrayList<Subject> subjects, Resources texts) {
+    public SubjectAdapter(ArrayList<Subject> subjects) {
         Subjects = subjects;
-        Texts = texts;
     }
 
     @Override
@@ -63,7 +61,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         ((LinearLayout)holder.SubjectAverage.getParent()).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                final Dialog dialog = Utilities.makeDialog(ActivityContext, Texts.getString(R.string.rename), Subjects.get(position).SubjectName);
+                final Dialog dialog = Utilities.makeDialog(ActivityContext, Utilities.getTexts().getString(R.string.rename), Subjects.get(position).SubjectName);
                 dialog.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -75,7 +73,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                                 GradeManagerContract.SubjectEntry.COLUMN_NAME_NAME,
                                 GradeManagerContract.SubjectEntry._ID
                         );
-                        Toast.makeText(ActivityContext, Texts.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityContext, Utilities.getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
                         dialog.dismiss();
                     }
@@ -91,7 +89,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
             grades.add(String.valueOf(grade.Grade));
         }
 
-        holder.SubjectGrades.setText(Utilities.decreaseGradeString(TextUtils.join(", ", grades)));
+//        holder.SubjectGrades.setText(Utilities.decreaseGradeString(TextUtils.join(", ", grades)));
     }
 
     @Override
@@ -103,13 +101,13 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
 
         public TextView SubjectName;
         public TextView SubjectAverage;
-        public TextView SubjectGrades;
+//        public TextView SubjectGrades;
 
         public ViewHolder(View itemView) {
             super(itemView);
             SubjectName = (TextView)itemView.findViewById(R.id.subject_name);
             SubjectAverage = (TextView)itemView.findViewById(R.id.subject_average);
-            SubjectGrades = (TextView)itemView.findViewById(R.id.subject_grades);
+//            SubjectGrades = (TextView)itemView.findViewById(R.id.subject_grades);
         }
     }
 }
