@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Grades</string>
+    <string name="action_settings">Settings</string>
+    <string name="saved">Saved</string>
+    <string name="error_grade_input">Please only enter numbers from 1 to 6.</string>
+    <string name="error_weight_input">Please only enter numbers from 1 to 100.</string>
+    <string name="new_subject">New Subject</string>
+    <string name="new_test">New Test</string>
+    <string name="dialog_info_grade">Your grade:</string>
+    <string name="dialog_info_weight">Weight of grade:</string>
+    <string name="dialog_info_test">Name of the test:</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="rename">New name:</string>
+    <string name="title_activity_subject_overview" translatable="false">SubjectOverviewActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>
