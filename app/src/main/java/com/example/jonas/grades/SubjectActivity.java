@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jonas.grades.Adapters.ExamAdapter;
 import com.example.jonas.grades.DB.DB;
@@ -73,8 +75,24 @@ public class SubjectActivity extends AppCompatActivity {
     private void generateSubjectView(){
         RecyclerView examListView = (RecyclerView) findViewById(R.id.exam_list_view);
         examAdapter = new ExamAdapter(CurrentSubject.exams,  CurrentSubject, (AppBarLayout) findViewById(R.id.app_bar), (TextView) findViewById(R.id.subject_average));
+        assert examListView != null;
         examListView.setAdapter(examAdapter);
         examListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // TODO remove on Swipe
+                Toast.makeText(ActivityContext, "Swiped", Toast.LENGTH_SHORT).show();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(examListView);
     }
 
     @Override

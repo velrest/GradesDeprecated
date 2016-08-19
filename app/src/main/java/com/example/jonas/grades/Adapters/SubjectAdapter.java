@@ -88,8 +88,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         for (Exam grade:Subjects.get(position).exams) {
             grades.add(String.valueOf(grade.Grade));
         }
-
-//        holder.SubjectGrades.setText(Utilities.decreaseGradeString(TextUtils.join(", ", grades)));
     }
 
     @Override
@@ -101,13 +99,11 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
 
         public TextView SubjectName;
         public TextView SubjectAverage;
-//        public TextView SubjectGrades;
 
         public ViewHolder(View itemView) {
             super(itemView);
             SubjectName = (TextView)itemView.findViewById(R.id.subject_name);
             SubjectAverage = (TextView)itemView.findViewById(R.id.subject_average);
-//            SubjectGrades = (TextView)itemView.findViewById(R.id.subject_grades);
         }
     }
 }
