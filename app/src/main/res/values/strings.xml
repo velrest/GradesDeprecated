@@ -15,4 +15,6 @@
     <string name="title_activity_subject_overview" translatable="false">SubjectOverviewActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="dialog_info_delete_subject">Are you sure you want to delete {0}?</string>
+    <string name="delete_info">Deleted {0}</string>
 </resources>

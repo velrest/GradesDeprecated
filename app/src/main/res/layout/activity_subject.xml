@@ -39,7 +39,7 @@
             </android.support.v7.widget.Toolbar>
 
             <TextView
-                android:id="@+id/subject_average"
+                android:id="@+id/bar_average"
                 android:layout_gravity="top|end"
                 android:textSize="80dp"
                 android:layout_width="wrap_content"

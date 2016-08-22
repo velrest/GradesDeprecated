@@ -24,44 +24,6 @@ public class DB {
         DB = DbHelper.getWritableDatabase();
     }
 
-    public static void generateTestData(){
-        ContentValues values = new ContentValues();
-
-        values.put(SemesterEntry.COLUMN_NAME_NAME, "Test");
-        long semesterID = DB.insert(SemesterEntry.TABLE_NAME, "null", values);
-
-        values = new ContentValues();
-        values.put(SubjectEntry.COLUMN_NAME_NAME, "Mathe");
-        values.put(SubjectEntry.COLUMN_NAME_SEMESTER, semesterID);
-        long subjectID = DB.insert(SubjectEntry.TABLE_NAME, "null", values);
-
-        values = new ContentValues();
-        values.put(GradeEntry.COLUMN_NAME_NAME, "Test 1");
-        values.put(GradeEntry.COLUMN_NAME_GRADE, 5.5);
-        values.put(GradeEntry.COLUMN_NAME_WEIGHT, 100);
-        values.put(GradeEntry.COLUMN_NAME_SUBJECT, subjectID);
-        DB.insert(GradeEntry.TABLE_NAME, "null", values);
-
-        values = new ContentValues();
-        values.put(SubjectEntry.COLUMN_NAME_NAME, "ABU");
-        values.put(SubjectEntry.COLUMN_NAME_SEMESTER, semesterID);
-        long subjectID2 = DB.insert(SubjectEntry.TABLE_NAME, "null", values);
-
-        values = new ContentValues();
-        values.put(GradeEntry.COLUMN_NAME_NAME, "Test 1");
-        values.put(GradeEntry.COLUMN_NAME_GRADE, 3);
-        values.put(GradeEntry.COLUMN_NAME_WEIGHT, 50);
-        values.put(GradeEntry.COLUMN_NAME_SUBJECT, subjectID2);
-        DB.insert(GradeEntry.TABLE_NAME, "null", values);
-
-        values = new ContentValues();
-        values.put(GradeEntry.COLUMN_NAME_NAME, "Test 1");
-        values.put(GradeEntry.COLUMN_NAME_GRADE, 6);
-        values.put(GradeEntry.COLUMN_NAME_WEIGHT, 50);
-        values.put(GradeEntry.COLUMN_NAME_SUBJECT, subjectID2);
-        DB.insert(GradeEntry.TABLE_NAME, "null", values);
-    }
-
     public static ArrayList<Semester> getAllSemesters(){
         ArrayList<Semester> semesters =  new ArrayList<>();
 
@@ -133,16 +95,16 @@ public class DB {
     public static ArrayList<Exam> getGradesFromSubject(long id){
         ArrayList<Exam> grades = new ArrayList<>();
         String[] gradeProjection = {
-                GradeEntry._ID,
-                GradeEntry.COLUMN_NAME_NAME,
-                GradeEntry.COLUMN_NAME_GRADE,
-                GradeEntry.COLUMN_NAME_WEIGHT
+                ExamEntry._ID,
+                ExamEntry.COLUMN_NAME_NAME,
+                ExamEntry.COLUMN_NAME_GRADE,
+                ExamEntry.COLUMN_NAME_WEIGHT
         };
 
-        String selection = GradeEntry.COLUMN_NAME_SUBJECT + " LIKE ?";
+        String selection = ExamEntry.COLUMN_NAME_SUBJECT + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
         Cursor cursorGrade = DB.query(
-                GradeEntry.TABLE_NAME,
+                ExamEntry.TABLE_NAME,
                 gradeProjection,
                 selection,
                 selectionArgs,
@@ -154,10 +116,10 @@ public class DB {
         while(!cursorGrade.isAfterLast()){
             grades.add(
                 new Exam(
-                    cursorGrade.getLong(cursorGrade.getColumnIndexOrThrow(GradeEntry._ID)),
-                    cursorGrade.getString(cursorGrade.getColumnIndexOrThrow(GradeEntry.COLUMN_NAME_NAME)),
-                    cursorGrade.getDouble(cursorGrade.getColumnIndexOrThrow(GradeEntry.COLUMN_NAME_GRADE)),
-                    cursorGrade.getInt(cursorGrade.getColumnIndexOrThrow(GradeEntry.COLUMN_NAME_WEIGHT))
+                    cursorGrade.getLong(cursorGrade.getColumnIndexOrThrow(ExamEntry._ID)),
+                    cursorGrade.getString(cursorGrade.getColumnIndexOrThrow(ExamEntry.COLUMN_NAME_NAME)),
+                    cursorGrade.getDouble(cursorGrade.getColumnIndexOrThrow(ExamEntry.COLUMN_NAME_GRADE)),
+                    cursorGrade.getInt(cursorGrade.getColumnIndexOrThrow(ExamEntry.COLUMN_NAME_WEIGHT))
                 )
             );
             cursorGrade.moveToNext();
