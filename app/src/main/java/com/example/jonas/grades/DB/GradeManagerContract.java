@@ -23,7 +23,7 @@ public final class GradeManagerContract {
         public static final String COLUMN_NAME_SEMESTER = "id_semester";
     }
 
-    public static  abstract class GradeEntry implements BaseColumns{
+    public static  abstract class ExamEntry implements BaseColumns{
         public static final String TABLE_NAME = "grade";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_GRADE = "grade";
@@ -50,12 +50,12 @@ public final class GradeManagerContract {
         " )";
 
     private static final String SQL_CREATE_GRADES =
-        "CREATE TABLE " + GradeEntry.TABLE_NAME + " (" +
-        GradeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-        GradeEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-        GradeEntry.COLUMN_NAME_GRADE + FLOAT_TYPE + COMMA_SEP +
-        GradeEntry.COLUMN_NAME_WEIGHT + INT_TYPE + COMMA_SEP +
-        GradeEntry.COLUMN_NAME_SUBJECT + INT_TYPE +
+        "CREATE TABLE " + ExamEntry.TABLE_NAME + " (" +
+        ExamEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+        ExamEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+        ExamEntry.COLUMN_NAME_GRADE + FLOAT_TYPE + COMMA_SEP +
+        ExamEntry.COLUMN_NAME_WEIGHT + INT_TYPE + COMMA_SEP +
+        ExamEntry.COLUMN_NAME_SUBJECT + INT_TYPE +
         " )";
 
     private static final String SQL_DELETE_SEMESTERS =
@@ -65,7 +65,7 @@ public final class GradeManagerContract {
         "DROP TABLE IF EXISTS " + SubjectEntry.TABLE_NAME;
 
     private static final String SQL_DELETE_GRADES =
-            "DROP TABLE IF EXISTS " + GradeEntry.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + ExamEntry.TABLE_NAME;
 
     public static class GradeManagerDbHelper extends SQLiteOpenHelper {
         public static final int DATABASE_VERSION = 1;

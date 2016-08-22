@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.design.widget.AppBarLayout;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -77,5 +79,11 @@ public class Utilities {
         TextView save = ((TextView)dialog.findViewById(R.id.save));
         save.setText(Texts.getString(R.string.ok));
         return dialog;
+    }
+
+    public static void setBarInfo(double average, AppBarLayout bar){
+        bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
+        bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
+        ((TextView)bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
     }
 }

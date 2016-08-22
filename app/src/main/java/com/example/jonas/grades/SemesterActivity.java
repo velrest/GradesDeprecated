@@ -3,10 +3,11 @@ package com.example.jonas.grades;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,9 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jonas.grades.Adapters.SubjectAdapter;
 import com.example.jonas.grades.DB.DB;
@@ -24,7 +24,9 @@ import com.example.jonas.grades.DB.GradeManagerContract.*;
 import com.example.jonas.grades.Models.Exam;
 import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;
+import static com.example.jonas.grades.Utilities.*;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,10 +34,10 @@ public class SemesterActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Semester CurrentSemester;
-    private ArrayList<Subject> Subjects = new ArrayList<>();
     private Context ActivityContext = this;
     private Resources Texts;
-    SubjectAdapter subjectAdapter;
+    private SubjectAdapter SubjectAdapterObj;
+    private AppBarLayout BarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +45,19 @@ public class SemesterActivity extends AppCompatActivity
         setContentView(R.layout.activity_semester);
 
         Texts = getResources();
-        Utilities.setTexts(Texts);
+        setTexts(Texts);
         DB.setDatabase(ActivityContext);
-        // TODO For testing purposes.
-        // DB.generateTestData();
         // TODO Change to current Subject.
         CurrentSemester = DB.getAllSemesters().get(0);
-        Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
+        CurrentSemester.Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
+        BarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(CurrentSemester.Name);
-        toolbar.setBackgroundColor(Utilities.colorFromGrade(CurrentSemester.getSemesterAverage()));
-        ((TextView)findViewById(R.id.semester_average)).setText(String.valueOf(CurrentSemester.getSemesterAverage()));
-        findViewById(R.id.toolbar_layout).setBackgroundColor(Utilities.colorFromGrade(CurrentSemester.getSemesterAverage()));
+
+        setBarInfo(CurrentSemester.getSemesterAverage(), BarLayout);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -67,10 +68,10 @@ public class SemesterActivity extends AppCompatActivity
                     put(SubjectEntry.COLUMN_NAME_NAME, Texts.getString(R.string.new_subject));
                     put(SubjectEntry.COLUMN_NAME_SEMESTER, String.valueOf(CurrentSemester.ID));
                 }});
-                Subjects.add(new Subject(subjectID, Texts.getString(R.string.new_subject), new ArrayList<Exam>()));
+                CurrentSemester.Subjects.add(new Subject(subjectID, Texts.getString(R.string.new_subject), new ArrayList<Exam>()));
                 // TODO I dont know why i regenerated the view here instead of notifyDataSetChanged
 //                    generateOverview();
-                subjectAdapter.notifyDataSetChanged();
+                SubjectAdapterObj.notifyDataSetChanged();
             }
         });
 
@@ -122,7 +123,7 @@ generateOveriew();
     @Override
     protected void onResume() {
         super.onResume();
-        Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
+        CurrentSemester.Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
         generateOveriew();
     }
 
@@ -152,9 +153,30 @@ generateOveriew();
     } // Overriden Methods
 
     private void generateOveriew(){
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.subject_list_view);
-        subjectAdapter = new SubjectAdapter(Subjects);
-        recyclerView.setAdapter(subjectAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
+        RecyclerView subjectListView = (RecyclerView) findViewById(R.id.subject_list_view);
+        SubjectAdapterObj = new SubjectAdapter(CurrentSemester.Subjects);
+        subjectListView.setAdapter(SubjectAdapterObj);
+        subjectListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // TODO remove on Swipe
+                Subject swipedSubject = CurrentSemester.Subjects.get(viewHolder.getAdapterPosition());
+                DB.delete(swipedSubject.ID, SubjectEntry.TABLE_NAME, SubjectEntry._ID);
+                CurrentSemester.Subjects.remove(swipedSubject);
+                Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedSubject.Name), Toast.LENGTH_SHORT).show();
+                setBarInfo(CurrentSemester.getSemesterAverage(), BarLayout);
+                SubjectAdapterObj.notifyDataSetChanged();
+//                makeDialog(ActivityContext, MessageFormat.format(Texts.getString(R.string.dialog_info_delete_subject),CurrentSubject.Exams.get(viewHolder.getAdapterPosition()).Name), );
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(subjectListView);
     }
 }

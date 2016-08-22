@@ -50,7 +50,7 @@ public class SemesterAdapter extends RecyclerView.Adapter<SemesterAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             SemesterName = (TextView)itemView.findViewById(R.id.semester_name);
-            SemesterAverage = (TextView)itemView.findViewById(R.id.semester_average);
+            SemesterAverage = (TextView)itemView.findViewById(R.id.bar_average);
         }
     }
 }

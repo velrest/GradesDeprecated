@@ -1,6 +1,6 @@
 package com.example.jonas.grades.Models;
 
-import com.example.jonas.grades.Utilities;
+import static com.example.jonas.grades.Utilities.*;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,6 @@ public class Semester {
         for (Subject subject: Subjects){
             average += subject.getSubjectAverage();
         }
-        return Utilities.round((average / Subjects.size()), 2);
+        return round((average / Subjects.size()), 2);
     }
 }

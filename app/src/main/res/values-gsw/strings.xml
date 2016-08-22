@@ -12,4 +12,6 @@
     <string name="saved">Gespeichert</string>
     <string name="navigation_drawer_close">Navigations Menü schliessen</string>
     <string name="navigation_drawer_open">Navigations Menü öffnen</string>
+    <string name="dialog_info_delete_subject">Sind sie sicher dass Sie {0} löschen wollen?</string>
+    <string name="delete_info">{0} wurde gelöscht</string>
 </resources>

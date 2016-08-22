@@ -1,6 +1,6 @@
 package com.example.jonas.grades.Models;
 
-import com.example.jonas.grades.Utilities;
+import static com.example.jonas.grades.Utilities.*;
 
 import java.util.ArrayList;
 
@@ -10,20 +10,20 @@ import java.util.ArrayList;
 public class Subject {
 
     public final long ID;
-    public String SubjectName;
-    public ArrayList<Exam> exams;
+    public String Name;
+    public ArrayList<Exam> Exams;
 
-    public Subject(long id, String subjectName, ArrayList<Exam> exams) {
+    public Subject(long id, String name, ArrayList<Exam> exams) {
         ID = id;
-        SubjectName = subjectName;
-        this.exams = exams;
+        Name = name;
+        this.Exams = exams;
     }
 
     public double getSubjectAverage(){
         double average = 0;
-        for (Exam grade : exams){
+        for (Exam grade : Exams){
             average += grade.Grade*grade.Weight/100;
-            average = Utilities.round(average, 2);
+            average = round(average, 2);
         }return average;
     }
 }
