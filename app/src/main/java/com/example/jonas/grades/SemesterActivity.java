@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.jonas.grades.Adapters.SubjectAdapter;
 import com.example.jonas.grades.DB.DB;
-import com.example.jonas.grades.DB.GradeManagerContract.*;
+import com.example.jonas.grades.DB.GradesContract.*;
 import com.example.jonas.grades.Models.Exam;
 import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;

@@ -11,11 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jonas.grades.DB.GradesContract;
 import com.example.jonas.grades.SubjectActivity;
 import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.DB.DB;
 import com.example.jonas.grades.Models.Exam;
-import com.example.jonas.grades.DB.GradeManagerContract;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Subject;
 import com.google.gson.Gson;
@@ -67,9 +67,9 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                         DB.update(
                                 Subjects.get(position).ID,
                                 ((TextView)dialog.findViewById(R.id.value)).getText().toString(),
-                                GradeManagerContract.SubjectEntry.TABLE_NAME,
-                                GradeManagerContract.SubjectEntry.COLUMN_NAME_NAME,
-                                GradeManagerContract.SubjectEntry._ID
+                                GradesContract.SubjectEntry.TABLE_NAME,
+                                GradesContract.SubjectEntry.COLUMN_NAME_NAME,
+                                GradesContract.SubjectEntry._ID
                         );
                         Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();

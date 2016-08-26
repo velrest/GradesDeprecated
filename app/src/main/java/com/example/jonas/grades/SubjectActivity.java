@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import java.text.MessageFormat;
 import java.util.HashMap;
 
-import com.example.jonas.grades.DB.GradeManagerContract.*;
+import com.example.jonas.grades.DB.GradesContract.*;
 import static com.example.jonas.grades.Utilities.*;
 
 

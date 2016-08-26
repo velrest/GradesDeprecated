@@ -6,10 +6,13 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.widget.DatePicker;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 /**
  * Created by jonas on 30.06.16.

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.example.jonas.grades.DB.GradeManagerContract.*;
+import com.example.jonas.grades.DB.GradesContract.*;
 import com.example.jonas.grades.Models.Exam;
 import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;

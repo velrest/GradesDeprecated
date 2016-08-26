@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.DB.DB;
-import com.example.jonas.grades.DB.GradeManagerContract;
+import com.example.jonas.grades.DB.GradesContract;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Subject;
+import com.example.jonas.grades.Utilities;
 
 /**
  * Created by jonas on 03.08.16.
@@ -46,13 +47,13 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         holder.ExamGrade.setTextColor(colorFromGrade(CurrentSubject.Exams.get(position).Grade));
         holder.ExamWeight.setText(String.valueOf(CurrentSubject.Exams.get(position).Weight));
 
-        holder.ExamGrade.setOnClickListener(new SubjectOnClickListener(getTexts().getString(R.string.dialog_info_grade)) {
+        holder.ExamGrade.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_grade)) {
             @Override
             void setDialogValue() {
                 try {
                     double gradeValue = Double.valueOf(((TextView)EditDialog.findViewById(R.id.value)).getText().toString());
                     if (gradeValue >= 1 && gradeValue <= 6) {
-                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradeManagerContract.ExamEntry.TABLE_NAME, GradeManagerContract.ExamEntry.COLUMN_NAME_GRADE, GradeManagerContract.ExamEntry._ID);
+                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_GRADE, GradesContract.ExamEntry._ID);
                         CurrentSubject.Exams.get(position).Grade = gradeValue;
                         notifyDataSetChanged();
                         EditDialog.dismiss();
@@ -65,13 +66,13 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
                 }
             }
         });
-        holder.ExamWeightBox.setOnClickListener(new SubjectOnClickListener(getTexts().getString(R.string.dialog_info_weight)) {
+        holder.ExamWeightBox.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_weight)) {
             @Override
             void setDialogValue() {
                 try {
                     int weightValue = Integer.valueOf(((TextView)EditDialog.findViewById(R.id.value)).getText().toString());
                     if (weightValue >= 1 && weightValue <= 100) {
-                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(weightValue), GradeManagerContract.ExamEntry.TABLE_NAME, GradeManagerContract.ExamEntry.COLUMN_NAME_WEIGHT, GradeManagerContract.ExamEntry._ID);
+                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(weightValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_WEIGHT, GradesContract.ExamEntry._ID);
                         CurrentSubject.Exams.get(position).Weight = weightValue;
                         notifyDataSetChanged();
                         EditDialog.dismiss();
@@ -84,11 +85,11 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
                 }
             }
         });
-        holder.ExamName.setOnClickListener(new SubjectOnClickListener(getTexts().getString(R.string.dialog_info_test)) {
+        holder.ExamName.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_test)) {
             @Override
             void setDialogValue() {
-                String name = ((TextView)EditDialog.findViewById(R.id.value)).getText().toString();
-                DB.update(CurrentSubject.Exams.get(position).ID, name, GradeManagerContract.ExamEntry.TABLE_NAME, GradeManagerContract.ExamEntry.COLUMN_NAME_NAME, GradeManagerContract.ExamEntry._ID);
+                String name = ((TextView) EditDialog.findViewById(R.id.value)).getText().toString();
+                DB.update(CurrentSubject.Exams.get(position).ID, name, GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_NAME, GradesContract.ExamEntry._ID);
                 CurrentSubject.Exams.get(position).Name = name;
                 notifyDataSetChanged();
                 EditDialog.dismiss();
@@ -118,13 +119,13 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         }
     }
 
-    abstract class SubjectOnClickListener implements View.OnClickListener{
+    abstract class ExamOnClickListener implements View.OnClickListener{
 
         private String Text;
         public Dialog EditDialog;
 
 
-        public SubjectOnClickListener(String text) {
+        public ExamOnClickListener(String text) {
             Text = text;
         }
 
