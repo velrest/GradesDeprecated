@@ -20,10 +20,13 @@ public class Subject {
     }
 
     public double getSubjectAverage(){
-        double average = 0;
-        for (Exam grade : Exams){
-            average += grade.Grade*grade.Weight/100;
-            average = round(average, 2);
-        }return average;
+        if (Exams.size() > 0) {
+            double average = 0;
+            for (Exam grade : Exams) {
+                average += grade.Grade * grade.Weight / 100;
+                average = round(average, 2);
+            }
+            return average;
+        } else return 0;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.jonas.grades.Adapters;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +13,9 @@ import android.widget.Toast;
 import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.DB.DB;
 import com.example.jonas.grades.DB.GradesContract;
+import com.example.jonas.grades.Dialog;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Subject;
-import com.example.jonas.grades.Utilities;
 
 /**
  * Created by jonas on 03.08.16.
@@ -47,53 +46,56 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         holder.ExamGrade.setTextColor(colorFromGrade(CurrentSubject.Exams.get(position).Grade));
         holder.ExamWeight.setText(String.valueOf(CurrentSubject.Exams.get(position).Weight));
 
-        holder.ExamGrade.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_grade)) {
+        holder.ExamGrade.setOnClickListener(new View.OnClickListener() {
             @Override
-            void setDialogValue() {
-                try {
-                    double gradeValue = Double.valueOf(((TextView)EditDialog.findViewById(R.id.value)).getText().toString());
-                    if (gradeValue >= 1 && gradeValue <= 6) {
-                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_GRADE, GradesContract.ExamEntry._ID);
-                        CurrentSubject.Exams.get(position).Grade = gradeValue;
-                        notifyDataSetChanged();
-                        EditDialog.dismiss();
-                        Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ActivityContext, getTexts().getString(R.string.error_grade_input), Toast.LENGTH_LONG).show();
+            public void onClick(View view) {
+                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_grade), Dialog.MULTI_PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Grade)) {
+
+                    @Override
+                    public void onClick() {
+                        double gradeValue = Double.valueOf(Input.getText().toString());
+                        if (gradeValue >= 1 && gradeValue <= 6) {
+                            DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_GRADE, GradesContract.ExamEntry._ID);
+                            CurrentSubject.Exams.get(position).Grade = gradeValue;
+                            notifyDataSetChanged();
+                            Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ActivityContext, getTexts().getString(R.string.error_grade_input), Toast.LENGTH_LONG).show();
+                        }
                     }
-                } catch (Exception e) {
-                    Toast.makeText(ActivityContext, getTexts().getString(R.string.error_grade_input), Toast.LENGTH_LONG).show();
-                }
+                }.show();
             }
         });
-        holder.ExamWeightBox.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_weight)) {
+        holder.ExamWeightBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            void setDialogValue() {
-                try {
-                    int weightValue = Integer.valueOf(((TextView)EditDialog.findViewById(R.id.value)).getText().toString());
-                    if (weightValue >= 1 && weightValue <= 100) {
+            public void onClick(View view) {
+                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_weight), Dialog.PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Weight)) {
+
+                    @Override
+                    public void onClick() {
+                        int weightValue = Picker.getValue();
                         DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(weightValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_WEIGHT, GradesContract.ExamEntry._ID);
                         CurrentSubject.Exams.get(position).Weight = weightValue;
                         notifyDataSetChanged();
-                        EditDialog.dismiss();
                         Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ActivityContext, getTexts().getString(R.string.error_weight_input), Toast.LENGTH_LONG).show();
                     }
-                } catch (Exception e) {
-                    Toast.makeText(ActivityContext, getTexts().getString(R.string.error_weight_input), Toast.LENGTH_LONG).show();
-                }
+                }.show();
             }
         });
-        holder.ExamName.setOnClickListener(new ExamOnClickListener(getTexts().getString(R.string.dialog_info_test)) {
+        holder.ExamName.setOnClickListener(new View.OnClickListener() {
             @Override
-            void setDialogValue() {
-                String name = ((TextView) EditDialog.findViewById(R.id.value)).getText().toString();
-                DB.update(CurrentSubject.Exams.get(position).ID, name, GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_NAME, GradesContract.ExamEntry._ID);
-                CurrentSubject.Exams.get(position).Name = name;
-                notifyDataSetChanged();
-                EditDialog.dismiss();
-                Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_name), Dialog.STRING_INPUT_DIALOG, CurrentSubject.Exams.get(position).Name) {
+
+                    @Override
+                    public void onClick() {
+                        String name = Input.getText().toString();
+                        DB.update(CurrentSubject.Exams.get(position).ID, name, GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_NAME, GradesContract.ExamEntry._ID);
+                        CurrentSubject.Exams.get(position).Name = name;
+                        notifyDataSetChanged();
+                        Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                    }
+                }.show();
             }
         });
     }
@@ -117,34 +119,5 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
             ExamWeight = (TextView)itemView.findViewById(R.id.exam_weight);
             ExamWeightBox = (LinearLayout)itemView.findViewById(R.id.exam_weight_box);
         }
-    }
-
-    abstract class ExamOnClickListener implements View.OnClickListener{
-
-        private String Text;
-        public Dialog EditDialog;
-
-
-        public ExamOnClickListener(String text) {
-            Text = text;
-        }
-
-        @Override
-        public void onClick(View view) {
-            TextView clickedView;
-            if (view.getClass() == LinearLayout.class) clickedView = (TextView) view.findViewById(R.id.exam_weight);
-            else clickedView = (TextView)view;
-            EditDialog = makeDialog(ActivityContext, Text, clickedView.getText().toString());
-            EditDialog.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setDialogValue();
-                    setBarInfo(CurrentSubject.getSubjectAverage(), Bar);
-                }
-            });
-            EditDialog.show();
-        }
-
-        abstract void setDialogValue();
     }
 }

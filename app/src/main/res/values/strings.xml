@@ -9,7 +9,7 @@
     <string name="new_test">New Test</string>
     <string name="dialog_info_grade">Your grade:</string>
     <string name="dialog_info_weight">Weight of grade:</string>
-    <string name="dialog_info_test">Name of the test:</string>
+    <string name="dialog_info_name">Name of the test:</string>
     <string name="ok" translatable="false">OK</string>
     <string name="rename">New name:</string>
     <string name="title_activity_subject_overview" translatable="false">SubjectOverviewActivity</string>

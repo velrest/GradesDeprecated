@@ -45,6 +45,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/cancel"
+            android:textColor="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:layout_alignParentStart="true"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
 </LinearLayout>

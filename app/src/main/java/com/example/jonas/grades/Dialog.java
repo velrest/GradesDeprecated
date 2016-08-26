@@ -1,44 +1,118 @@
 package com.example.jonas.grades;
 
 import android.content.Context;
+import android.os.DeadObjectException;
 import android.text.InputType;
 import android.view.View;
 import android.widget.*;
 
-import com.example.jonas.grades.Models.Exam;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jonas on 25.08.16.
  */
 public abstract class Dialog extends android.app.Dialog{
 
-    public static final int WEIGHT_DIALOG = 0;
-    public static final int GRADE_DIALOG = 1;
-    public static final int NAME_DIALOG = 2;
+    public static final int PICKER_DIALOG = 0;
+    public static final int MULTI_PICKER_DIALOG = 1;
+    public static final int STRING_INPUT_DIALOG = 2;
 
-    private Context ActivityContext;
-    private Exam CurrentExam;
     private Button Cancel;
     private Button Save;
+    private String Info;
+    private int DialogType;
+    private String DefaultValue;
+
+    public NumberPicker Picker;
+    public NumberPicker PickerDeci;
+    public NumberPicker PickerCenti;
+    public EditText Input;
 
 
-    public Dialog(Context context, String info, int type, Exam currentExam) {
+    public Dialog(Context context, String info, int dialogType, String defaultValue) {
         super(context);
-        CurrentExam = currentExam;
-        ActivityContext = context;
+        Info = info;
+        DialogType = dialogType;
+        DefaultValue = defaultValue;
 
+//        if (DialogType == Dialog.MULTI_PICKER_DIALOG || DialogType == Dialog.STRING_INPUT_DIALOG){
+//            setContentView(R.layout.dialog_input);
+//            Input = (EditText) findViewById(R.id.value);
+//            Input.setSelectAllOnFocus(true);
+//            Input.setText(DefaultValue);
+//            if (DialogType == Dialog.MULTI_PICKER_DIALOG) {
+//                Input.setInputType(InputType.TYPE_CLASS_NUMBER);
+//            }
+//        }
+//        else {
+//            setContentView(R.layout.dialog_picker);
+//            Picker = (NumberPicker) findViewById(R.id.picker);
+//            Picker.setValue(Integer.valueOf(DefaultValue));
+//            Picker.setMinValue(0);
+//            Picker.setMaxValue(100);
+//        }
 
-
-        switch (type){
-            case Dialog.GRADE_DIALOG: gradeDialog();
+        switch (DialogType){
+            case PICKER_DIALOG:
+                setContentView(R.layout.dialog_picker);
+                Picker = (NumberPicker) findViewById(R.id.picker);
+                Picker.setValue(Integer.valueOf(DefaultValue));
+                Picker.setMinValue(0);
+                Picker.setMaxValue(100);
                 break;
 
-            case Dialog.WEIGHT_DIALOG: weightDialog();
+            case MULTI_PICKER_DIALOG:
+                setContentView(R.layout.dialog_multi_picker);
+                ArrayList<String> numbs = new ArrayList<>(Arrays.asList(DefaultValue.split("\\.")));
+                numbs.remove(0);
+                Picker = (NumberPicker) findViewById(R.id.picker);
+                Picker.setValue(Integer.valueOf(numbs.get(0)));
+                Picker.setMinValue(1);
+                Picker.setMaxValue(6);
+                Picker.setOnValueChangedListener(new android.widget.NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(android.widget.NumberPicker numberPicker, int i, int i1) {
+                        if (i1 == 6 || i1 == 1){
+                            PickerDeci.setValue(0);
+                            PickerDeci.setEnabled(false);
+                            PickerCenti.setValue(0);
+                            PickerCenti.setEnabled(false);
+                        }
+                    }
+                });
+
+                PickerDeci = (NumberPicker) findViewById(R.id.picker_deci);
+                // .split("")[1] Because first one is on split: ""
+                try {
+                    PickerDeci.setValue(Integer.valueOf(numbs.get(0).split("")[1]));
+                } catch (IndexOutOfBoundsException e){
+                    PickerDeci.setValue(0);
+                }
+                Picker.setMinValue(0);
+                Picker.setMaxValue(9);
+
+                PickerCenti = (NumberPicker) findViewById(R.id.picker_centi);
+                // .split("")[2] Because first one is on split: ""
+                try {
+                    PickerCenti.setValue(Integer.valueOf(numbs.get(0).split("")[2]));
+                } catch (IndexOutOfBoundsException e){
+                    PickerCenti.setValue(0);
+                }
+                Picker.setMinValue(0);
+                Picker.setMaxValue(9);
                 break;
 
-            case Dialog.NAME_DIALOG: nameDialog();
+            case STRING_INPUT_DIALOG:
+                setContentView(R.layout.dialog_input);
+                Input = (EditText) findViewById(R.id.value);
+                Input.setSelectAllOnFocus(true);
+                Input.setText(DefaultValue);
                 break;
         }
+
+        ((TextView)findViewById(R.id.info)).setText(Info);
 
         Save = (Button)findViewById(R.id.save);
         Save.setText(Utilities.getTexts().getString(R.string.ok));
@@ -54,35 +128,10 @@ public abstract class Dialog extends android.app.Dialog{
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                DB.update(CurrentExam.ID, String.valueOf(numberPicker.getValue()), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_WEIGHT, GradesContract.ExamEntry._ID);
-//                CurrentExam.Weight = numberPicker.getValue();
                 Dialog.this.onClick();
                 dismiss();
             }
         });
-    }
-
-    private void weightDialog(){
-        setContentView(R.layout.weight_dialog);
-        final NumberPicker numberPicker = (NumberPicker) findViewById(R.id.picker);
-
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(100);
-        numberPicker.setValue(CurrentExam.Weight);
-    }
-
-    private void gradeDialog(){
-        setContentView(R.layout.input_dialog);
-        EditText value = (EditText) findViewById(R.id.value);
-        value.setText(String.valueOf(CurrentExam.Grade));
-        value.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-    }
-
-    private void nameDialog(){
-        setContentView(R.layout.input_dialog);
-        EditText value = (EditText) findViewById(R.id.value);
-        value.setText(CurrentExam.Name);;
     }
 
     public abstract void onClick();

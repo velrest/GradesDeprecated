@@ -1,6 +1,5 @@
 package com.example.jonas.grades.Adapters;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +17,7 @@ import com.example.jonas.grades.DB.DB;
 import com.example.jonas.grades.Models.Exam;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Subject;
+import com.example.jonas.grades.*;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.SubjectAverage.setTextColor(colorFromGrade(Subjects.get(position).getSubjectAverage()));
         holder.SubjectAverage.setText(String.valueOf(round(Subjects.get(position).getSubjectAverage(), 1)));
         ((LinearLayout)holder.SubjectAverage.getParent()).setOnClickListener(new View.OnClickListener() {
@@ -59,29 +59,26 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         ((LinearLayout)holder.SubjectAverage.getParent()).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                final Dialog dialog = makeDialog(ActivityContext, getTexts().getString(R.string.rename), Subjects.get(position).Name);
-                dialog.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+                new Dialog(ActivityContext, getTexts().getString(R.string.rename), Dialog.STRING_INPUT_DIALOG, Subjects.get(position).Name) {
                     @Override
-                    public void onClick(View view) {
-                        Subjects.get(position).Name = ((TextView)dialog.findViewById(R.id.value)).getText().toString();
+                    public void onClick() {
+                        Subjects.get(position).Name = Input.getText().toString();
                         DB.update(
                                 Subjects.get(position).ID,
-                                ((TextView)dialog.findViewById(R.id.value)).getText().toString(),
+                                Input.getText().toString(),
                                 GradesContract.SubjectEntry.TABLE_NAME,
                                 GradesContract.SubjectEntry.COLUMN_NAME_NAME,
                                 GradesContract.SubjectEntry._ID
                         );
                         Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
-                        dialog.dismiss();
                     }
-                });
-                dialog.show();
+                }.show();
                 return true;
             }
         });
 
-        holder.SubjectName.setText(decreaseSubjectNameString(Subjects.get(position).Name));
+        holder.SubjectName.setText(Subjects.get(position).Name);
         ArrayList<String> grades = new ArrayList<>();
         for (Exam grade:Subjects.get(position).Exams) {
             grades.add(String.valueOf(grade.Grade));

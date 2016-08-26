@@ -20,10 +20,12 @@ public class Semester {
     }
 
     public double getSemesterAverage(){
-        double average = 0;
-        for (Subject subject: Subjects){
-            average += subject.getSubjectAverage();
-        }
-        return round((average / Subjects.size()), 2);
+        if (Subjects.size() > 0) {
+            double average = 0;
+            for (Subject subject : Subjects) {
+                average += subject.getSubjectAverage();
+            }
+            return round((average / Subjects.size()), 2);
+        }else return 0;
     }
 }

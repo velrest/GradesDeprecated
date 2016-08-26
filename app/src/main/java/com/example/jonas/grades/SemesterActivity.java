@@ -47,8 +47,18 @@ public class SemesterActivity extends AppCompatActivity
         Texts = getResources();
         setTexts(Texts);
         DB.setDatabase(ActivityContext);
+
+//        DB.demo();
+
         // TODO Change to current Subject.
-        CurrentSemester = DB.getAllSemesters().get(0);
+        try {
+            CurrentSemester = DB.getAllSemesters().get(0);
+        } catch (IndexOutOfBoundsException e){
+            CurrentSemester = new Semester(0, "Semester 1", new ArrayList<Subject>());
+            DB.insert(SemesterEntry.TABLE_NAME, new HashMap<String, String>(){{
+                put(SemesterEntry.COLUMN_NAME_NAME, CurrentSemester.Name);
+            }});
+        }
         CurrentSemester.Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
         BarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 
@@ -151,7 +161,7 @@ public class SemesterActivity extends AppCompatActivity
                 Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedSubject.Name), Toast.LENGTH_SHORT).show();
                 setBarInfo(CurrentSemester.getSemesterAverage(), BarLayout);
                 SubjectAdapterObj.notifyDataSetChanged();
-//                makeDialog(ActivityContext, MessageFormat.format(Texts.getString(R.string.dialog_info_delete_subject),CurrentSubject.Exams.get(viewHolder.getAdapterPosition()).Name), );
+
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);

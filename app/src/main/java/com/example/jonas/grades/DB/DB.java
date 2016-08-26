@@ -10,6 +10,7 @@ import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
