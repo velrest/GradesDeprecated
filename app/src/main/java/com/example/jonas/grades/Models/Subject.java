@@ -4,9 +4,6 @@ import static com.example.jonas.grades.Utilities.*;
 
 import java.util.ArrayList;
 
-/**
- * Created by jonas on 29.06.16.
- */
 public class Subject {
 
     public final long ID;

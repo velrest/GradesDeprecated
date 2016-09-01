@@ -10,12 +10,8 @@ import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by jonas on 19.07.16.
- */
 public class DB {
 
     public static SQLiteDatabase DB;

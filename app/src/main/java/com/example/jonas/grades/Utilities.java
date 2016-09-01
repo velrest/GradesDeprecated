@@ -1,30 +1,21 @@
 package com.example.jonas.grades;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
-import android.widget.DatePicker;
-import android.widget.NumberPicker;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 
-/**
- * Created by jonas on 30.06.16.
- */
 public class Utilities {
 
     private static Resources Texts;
-
-    public static void setTexts(Resources texts) {
-        Texts = texts;
-    }
-    public static Resources getTexts(){return  Texts;}
+    private static Context ActivityContext;
+    private static AppBarLayout Bar;
 
     public static double round(double value, int places) {
         BigDecimal bd = new BigDecimal(value);
@@ -48,9 +39,21 @@ public class Utilities {
         return Color.parseColor(colorString);
     }
 
-    public static void setBarInfo(double average, AppBarLayout bar){
-        bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
-        bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
-        ((TextView)bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
+    public static void setBarInfo(double average){
+        Bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
+        Bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
+        ((TextView)Bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
     }
+
+    public static void updateValues(Context activityContext, AppBarLayout appBarLayout, double average){
+        ActivityContext = activityContext;
+        Bar = appBarLayout;
+        setBarInfo(average);
+    }
+
+    public static void setTexts(Resources texts) {
+        Texts = texts;
+    }
+    public static Resources getTexts(){return  Texts;}
+    public static Context getActivityContext() { return ActivityContext; }
 }

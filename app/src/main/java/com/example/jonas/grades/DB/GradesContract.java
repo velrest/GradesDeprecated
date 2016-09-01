@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-/**
- * Created by jonas on 19.07.16.
- */
 public final class GradesContract {
 
     public GradesContract(){}

@@ -33,7 +33,6 @@ public class SubjectActivity extends AppCompatActivity {
     private Context ActivityContext = this;
     private Resources Texts;
     private ExamAdapter ExamAdapterObj;
-    private AppBarLayout BarLayout;
 
 
     @Override
@@ -44,15 +43,24 @@ public class SubjectActivity extends AppCompatActivity {
         Texts = getResources();
         Gson gson = new Gson();
         CurrentSubject = gson.fromJson(getIntent().getExtras().get("Subject").toString(), Subject.class);
-        BarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(CurrentSubject.Name);
-        setBarInfo(CurrentSubject.getSubjectAverage(), BarLayout);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        updateValues(ActivityContext, (AppBarLayout)findViewById(R.id.app_bar), CurrentSubject.getSubjectAverage());
+
+        generateSubjectView();
+    }
+
+    private void generateSubjectView(){
+        RecyclerView examListView = (RecyclerView) findViewById(R.id.exam_list_view);
+        ExamAdapterObj = new ExamAdapter(CurrentSubject);
+        assert examListView != null;
+        examListView.setAdapter(ExamAdapterObj);
+        examListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (fab != null) {
@@ -65,20 +73,11 @@ public class SubjectActivity extends AppCompatActivity {
                         put(ExamEntry.COLUMN_NAME_WEIGHT, String.valueOf(0));
                         put(ExamEntry.COLUMN_NAME_SUBJECT, String.valueOf(CurrentSubject.ID));
                     }});
-                    CurrentSubject.Exams.add(new Exam(gradeID, Texts.getString(R.string.new_test), 0.0, 0));
-                    ExamAdapterObj.notifyDataSetChanged();
+                    CurrentSubject.Exams.add(0, new Exam(gradeID, Texts.getString(R.string.new_test), 0.0, 0));
+                    ExamAdapterObj.notifyItemInserted(0);
                 }
             });
         }
-        generateSubjectView();
-    }
-
-    private void generateSubjectView(){
-        RecyclerView examListView = (RecyclerView) findViewById(R.id.exam_list_view);
-        ExamAdapterObj = new ExamAdapter(CurrentSubject, BarLayout);
-        assert examListView != null;
-        examListView.setAdapter(ExamAdapterObj);
-        examListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -88,18 +87,18 @@ public class SubjectActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // TODO remove on Swipe
+                // TODO make a element invisible on swipe
                 Exam swipedExam = CurrentSubject.Exams.get(viewHolder.getAdapterPosition());
                 DB.delete(swipedExam.ID, ExamEntry.TABLE_NAME, ExamEntry._ID);
                 CurrentSubject.Exams.remove(swipedExam);
                 Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedExam.Name), Toast.LENGTH_SHORT).show();
-                setBarInfo(CurrentSubject.getSubjectAverage(), BarLayout);
-                ExamAdapterObj.notifyDataSetChanged();
-//                makeDialog(ActivityContext, MessageFormat.format(Texts.getString(R.string.dialog_info_delete_subject),CurrentSubject.Exams.get(viewHolder.getAdapterPosition()).Name), );
+                setBarInfo(CurrentSubject.getSubjectAverage());
+                ExamAdapterObj.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(examListView);
+
     }
 
     @Override
@@ -110,5 +109,11 @@ public class SubjectActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateValues(ActivityContext, (AppBarLayout)findViewById(R.id.app_bar), CurrentSubject.getSubjectAverage());
     }
 }

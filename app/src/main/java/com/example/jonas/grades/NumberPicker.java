@@ -6,9 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 
-/**
- * Created by jonas on 25.08.16.
- */
 public class NumberPicker extends android.widget.NumberPicker {
 
     public NumberPicker(Context context, AttributeSet attrs) {

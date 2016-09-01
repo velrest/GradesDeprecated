@@ -1,14 +1,12 @@
 package com.example.jonas.grades.Adapters;
 
-import android.content.Context;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.DB.DB;
@@ -17,24 +15,18 @@ import com.example.jonas.grades.Dialog;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Subject;
 
-/**
- * Created by jonas on 03.08.16.
- */
 public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
 
     private Subject CurrentSubject;
-    private Context ActivityContext;
-    private AppBarLayout Bar;
+    private ExamAdapter This = this;
 
-    public ExamAdapter(Subject currentSubject, AppBarLayout bar) {
+    public ExamAdapter(Subject currentSubject) {
         CurrentSubject = currentSubject;
-        Bar = bar;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ActivityContext = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(ActivityContext);
+        LayoutInflater inflater = LayoutInflater.from(getActivityContext());
         View contView = inflater.inflate(R.layout.list_exams_prefab, parent, false);
         return new ViewHolder(contView);
     }
@@ -49,19 +41,15 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         holder.ExamGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_grade), Dialog.MULTI_PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Grade)) {
+                new Dialog(getTexts().getString(R.string.dialog_info_grade), Dialog.MULTI_PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Grade)) {
 
                     @Override
-                    public void onClick() {
-                        double gradeValue = Double.valueOf(Input.getText().toString());
-                        if (gradeValue >= 1 && gradeValue <= 6) {
-                            DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_GRADE, GradesContract.ExamEntry._ID);
-                            CurrentSubject.Exams.get(position).Grade = gradeValue;
-                            notifyDataSetChanged();
-                            Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(ActivityContext, getTexts().getString(R.string.error_grade_input), Toast.LENGTH_LONG).show();
-                        }
+                    public double onClick() {
+                        double gradeValue = Double.valueOf(TextUtils.join(".", new String[]{String.valueOf(Picker.getValue()), String.valueOf(PickerDeci.getValue())+String.valueOf(PickerCenti.getValue())}));
+                        DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(gradeValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_GRADE, GradesContract.ExamEntry._ID);
+                        CurrentSubject.Exams.get(position).Grade = gradeValue;
+                        updateAdapter(This, position);
+                        return CurrentSubject.getSubjectAverage();
                     }
                 }.show();
             }
@@ -69,15 +57,15 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         holder.ExamWeightBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_weight), Dialog.PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Weight)) {
+                new Dialog(getTexts().getString(R.string.dialog_info_weight), Dialog.PICKER_DIALOG, String.valueOf(CurrentSubject.Exams.get(position).Weight)) {
 
                     @Override
-                    public void onClick() {
+                    public double onClick() {
                         int weightValue = Picker.getValue();
                         DB.update(CurrentSubject.Exams.get(position).ID, String.valueOf(weightValue), GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_WEIGHT, GradesContract.ExamEntry._ID);
                         CurrentSubject.Exams.get(position).Weight = weightValue;
-                        notifyDataSetChanged();
-                        Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                        updateAdapter(This, position);
+                        return CurrentSubject.getSubjectAverage();
                     }
                 }.show();
             }
@@ -85,15 +73,15 @@ public class ExamAdapter extends RecyclerView.Adapter<ExamAdapter.ViewHolder>{
         holder.ExamName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Dialog(ActivityContext, getTexts().getString(R.string.dialog_info_name), Dialog.STRING_INPUT_DIALOG, CurrentSubject.Exams.get(position).Name) {
+                new Dialog(getTexts().getString(R.string.dialog_info_name), Dialog.STRING_INPUT_DIALOG, CurrentSubject.Exams.get(position).Name) {
 
                     @Override
-                    public void onClick() {
+                    public double onClick() {
                         String name = Input.getText().toString();
                         DB.update(CurrentSubject.Exams.get(position).ID, name, GradesContract.ExamEntry.TABLE_NAME, GradesContract.ExamEntry.COLUMN_NAME_NAME, GradesContract.ExamEntry._ID);
                         CurrentSubject.Exams.get(position).Name = name;
-                        notifyDataSetChanged();
-                        Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                        updateAdapter(This, position);
+                        return CurrentSubject.getSubjectAverage();
                     }
                 }.show();
             }

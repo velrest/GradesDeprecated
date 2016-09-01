@@ -4,9 +4,6 @@ import static com.example.jonas.grades.Utilities.*;
 
 import java.util.ArrayList;
 
-/**
- * Created by jonas on 20.07.16.
- */
 public class Semester {
 
     public final long ID;
