@@ -1,20 +1,16 @@
 package com.example.jonas.grades.Adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.R;
 import com.example.jonas.grades.Models.Semester;
 
 import java.util.ArrayList;
 
-/**
- * Created by jonas on 03.08.16.
- */
 public class SemesterAdapter extends RecyclerView.Adapter<SemesterAdapter.ViewHolder>{
 
     private ArrayList<Semester> Semesters;
@@ -25,8 +21,7 @@ public class SemesterAdapter extends RecyclerView.Adapter<SemesterAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(getActivityContext());
         View contView = inflater.inflate(R.layout.list_semester_prefab, parent, false);
         return new ViewHolder(contView);
     }

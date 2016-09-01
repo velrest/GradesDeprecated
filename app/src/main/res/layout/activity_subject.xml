@@ -28,14 +28,6 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-                <!--<android.support.v7.widget.AppCompatImageButton-->
-                    <!--android:id="@+id/back"-->
-                    <!--android:layout_width="60dp"-->
-                    <!--android:paddingLeft="-20dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="@null"-->
-                    <!--android:src="@drawable/ic_arrow_back_white" />-->
-
             </android.support.v7.widget.Toolbar>
 
             <TextView

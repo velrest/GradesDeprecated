@@ -1,27 +1,21 @@
 package com.example.jonas.grades;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
- * Created by jonas on 30.06.16.
- */
 public class Utilities {
 
     private static Resources Texts;
-
-    public static void setTexts(Resources texts) {
-        Texts = texts;
-    }
-    public static Resources getTexts(){return  Texts;}
+    private static Context ActivityContext;
+    private static AppBarLayout Bar;
 
     public static double round(double value, int places) {
         BigDecimal bd = new BigDecimal(value);
@@ -45,45 +39,21 @@ public class Utilities {
         return Color.parseColor(colorString);
     }
 
-    public static String decreaseSubjectNameString(String longString){
-        if (longString.toCharArray().length > 20) {
-            String shortString = "";
-            int index = 0;
-            while (index < 20) {
-                shortString += longString.toCharArray()[index];
-                index++;
-            }
-            shortString += "...";
-            return shortString;
-        } else return longString;
+    public static void setBarInfo(double average){
+        Bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
+        Bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
+        ((TextView)Bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
     }
 
-    public static String decreaseGradeString(String longString){
-        if (longString.split(",").length > 4) {
-            String shortString = "";
-            int index = 0;
-            while (index < 4) {
-                shortString += longString.split(",")[index]+",";
-                index++;
-            }
-            shortString += " ...";
-            return shortString;
-        } else return longString;
+    public static void updateValues(Context activityContext, AppBarLayout appBarLayout, double average){
+        ActivityContext = activityContext;
+        Bar = appBarLayout;
+        setBarInfo(average);
     }
 
-    public static Dialog makeDialog(Context context, String infoText, String value){
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.input_dialog);
-        ((TextView)dialog.findViewById(R.id.info)).setText(infoText);
-        ((TextView)dialog.findViewById(R.id.value)).setText(value);
-        TextView save = ((TextView)dialog.findViewById(R.id.save));
-        save.setText(Texts.getString(R.string.ok));
-        return dialog;
+    public static void setTexts(Resources texts) {
+        Texts = texts;
     }
-
-    public static void setBarInfo(double average, AppBarLayout bar){
-        bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
-        bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
-        ((TextView)bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
-    }
+    public static Resources getTexts(){return  Texts;}
+    public static Context getActivityContext() { return ActivityContext; }
 }

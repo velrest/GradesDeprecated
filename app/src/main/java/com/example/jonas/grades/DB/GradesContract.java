@@ -5,12 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-/**
- * Created by jonas on 19.07.16.
- */
-public final class GradeManagerContract {
+public final class GradesContract {
 
-    public GradeManagerContract(){}
+    public GradesContract(){}
 
     public static abstract class SemesterEntry implements BaseColumns{
         public static final String TABLE_NAME = "semester";

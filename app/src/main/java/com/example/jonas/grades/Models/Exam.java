@@ -1,8 +1,5 @@
 package com.example.jonas.grades.Models;
 
-/**
- * Created by jonas on 13.07.16.
- */
 public class Exam {
     public final long ID;
     public String Name;

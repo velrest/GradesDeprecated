@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="0dp">
+
+    <Button
+        android:id="@+id/save"
+        android:textSize="15dp"
+        android:textColor="@color/colorAccent"
+        android:background="@android:color/transparent"
+        android:layout_alignParentEnd="true"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:textSize="15dp"
+        android:textColor="@color/colorAccent"
+        android:background="@android:color/transparent"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

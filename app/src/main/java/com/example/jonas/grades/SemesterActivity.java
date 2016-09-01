@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.jonas.grades.Adapters.SubjectAdapter;
 import com.example.jonas.grades.DB.DB;
-import com.example.jonas.grades.DB.GradeManagerContract.*;
+import com.example.jonas.grades.DB.GradesContract.*;
 import com.example.jonas.grades.Models.Exam;
 import com.example.jonas.grades.Models.Semester;
 import com.example.jonas.grades.Models.Subject;
@@ -37,7 +37,6 @@ public class SemesterActivity extends AppCompatActivity
     private Context ActivityContext = this;
     private Resources Texts;
     private SubjectAdapter SubjectAdapterObj;
-    private AppBarLayout BarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,33 +46,21 @@ public class SemesterActivity extends AppCompatActivity
         Texts = getResources();
         setTexts(Texts);
         DB.setDatabase(ActivityContext);
+
         // TODO Change to current Subject.
-        CurrentSemester = DB.getAllSemesters().get(0);
+        try {
+            CurrentSemester = DB.getAllSemesters().get(0);
+        } catch (IndexOutOfBoundsException e){
+            CurrentSemester = new Semester(0, "Semester 1", new ArrayList<Subject>());
+            DB.insert(SemesterEntry.TABLE_NAME, new HashMap<String, String>(){{
+                put(SemesterEntry.COLUMN_NAME_NAME, CurrentSemester.Name);
+            }});
+        }
         CurrentSemester.Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
-        BarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(CurrentSemester.Name);
-
-        setBarInfo(CurrentSemester.getSemesterAverage(), BarLayout);
         setSupportActionBar(toolbar);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long subjectID = DB.insert(SubjectEntry.TABLE_NAME, new HashMap<String, String>(){{
-                    put(SubjectEntry.COLUMN_NAME_NAME, Texts.getString(R.string.new_subject));
-                    put(SubjectEntry.COLUMN_NAME_SEMESTER, String.valueOf(CurrentSemester.ID));
-                }});
-                CurrentSemester.Subjects.add(new Subject(subjectID, Texts.getString(R.string.new_subject), new ArrayList<Exam>()));
-                // TODO I dont know why i regenerated the view here instead of notifyDataSetChanged
-//                    generateOverview();
-                SubjectAdapterObj.notifyDataSetChanged();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -84,8 +71,52 @@ public class SemesterActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this); // Setup.
 
+        updateValues(ActivityContext, (AppBarLayout)findViewById(R.id.app_bar), CurrentSemester.getSemesterAverage());
+
         // TODO generate Drawer data.
         generateOveriew();
+    }
+
+    private void generateOveriew(){
+        RecyclerView subjectListView = (RecyclerView) findViewById(R.id.subject_list_view);
+        SubjectAdapterObj = new SubjectAdapter(CurrentSemester);
+        subjectListView.setAdapter(SubjectAdapterObj);
+        subjectListView.setLayoutManager(new GridLayoutManager(ActivityContext, 3));
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long subjectID = DB.insert(SubjectEntry.TABLE_NAME, new HashMap<String, String>(){{
+                    put(SubjectEntry.COLUMN_NAME_NAME, Texts.getString(R.string.new_subject));
+                    put(SubjectEntry.COLUMN_NAME_SEMESTER, String.valueOf(CurrentSemester.ID));
+                }});
+                CurrentSemester.Subjects.add(0, new Subject(subjectID, Texts.getString(R.string.new_subject), new ArrayList<Exam>()));
+                SubjectAdapterObj.notifyItemInserted(0);
+            }
+        });
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // TODO make element invisible on Swipe
+                Subject swipedSubject = CurrentSemester.Subjects.get(viewHolder.getAdapterPosition());
+                DB.delete(swipedSubject.ID, SubjectEntry.TABLE_NAME, SubjectEntry._ID);
+                CurrentSemester.Subjects.remove(swipedSubject);
+                Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedSubject.Name), Toast.LENGTH_SHORT).show();
+                setBarInfo(CurrentSemester.getSemesterAverage());
+                SubjectAdapterObj.notifyItemRemoved(viewHolder.getAdapterPosition());
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(subjectListView);
     }
 
     @Override
@@ -102,6 +133,7 @@ public class SemesterActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         CurrentSemester.Subjects = DB.getSubjectsFromSemester(CurrentSemester.ID);
+        updateValues(ActivityContext, (AppBarLayout)findViewById(R.id.app_bar), CurrentSemester.getSemesterAverage());
         generateOveriew();
     }
 
@@ -130,31 +162,4 @@ public class SemesterActivity extends AppCompatActivity
         return true;
     } // Overriden Methods
 
-    private void generateOveriew(){
-        RecyclerView subjectListView = (RecyclerView) findViewById(R.id.subject_list_view);
-        SubjectAdapterObj = new SubjectAdapter(CurrentSemester.Subjects);
-        subjectListView.setAdapter(SubjectAdapterObj);
-        subjectListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
-
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // TODO remove on Swipe
-                Subject swipedSubject = CurrentSemester.Subjects.get(viewHolder.getAdapterPosition());
-                DB.delete(swipedSubject.ID, SubjectEntry.TABLE_NAME, SubjectEntry._ID);
-                CurrentSemester.Subjects.remove(swipedSubject);
-                Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedSubject.Name), Toast.LENGTH_SHORT).show();
-                setBarInfo(CurrentSemester.getSemesterAverage(), BarLayout);
-                SubjectAdapterObj.notifyDataSetChanged();
-//                makeDialog(ActivityContext, MessageFormat.format(Texts.getString(R.string.dialog_info_delete_subject),CurrentSubject.Exams.get(viewHolder.getAdapterPosition()).Name), );
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(subjectListView);
-    }
 }
