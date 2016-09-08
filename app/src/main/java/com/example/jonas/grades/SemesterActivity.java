@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
@@ -81,7 +82,7 @@ public class SemesterActivity extends AppCompatActivity
         RecyclerView subjectListView = (RecyclerView) findViewById(R.id.subject_list_view);
         SubjectAdapterObj = new SubjectAdapter(CurrentSemester);
         subjectListView.setAdapter(SubjectAdapterObj);
-        subjectListView.setLayoutManager(new GridLayoutManager(ActivityContext, 3));
+        subjectListView.setLayoutManager(new GridLayoutManager(ActivityContext, 2));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -108,11 +109,10 @@ public class SemesterActivity extends AppCompatActivity
                 // TODO make element invisible on Swipe
                 Subject swipedSubject = CurrentSemester.Subjects.get(viewHolder.getAdapterPosition());
                 DB.delete(swipedSubject.ID, SubjectEntry.TABLE_NAME, SubjectEntry._ID);
-                CurrentSemester.Subjects.remove(swipedSubject);
+                CurrentSemester.Subjects.remove(viewHolder.getAdapterPosition());
                 Toast.makeText(ActivityContext, MessageFormat.format(Texts.getString(R.string.delete_info) ,swipedSubject.Name), Toast.LENGTH_SHORT).show();
                 setBarInfo(CurrentSemester.getSemesterAverage());
                 SubjectAdapterObj.notifyItemRemoved(viewHolder.getAdapterPosition());
-
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
