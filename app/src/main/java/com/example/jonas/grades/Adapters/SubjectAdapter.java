@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.jonas.grades.DB.GradesContract;
 import com.example.jonas.grades.Models.Semester;
+import com.example.jonas.grades.Models.Subject;
 import com.example.jonas.grades.SubjectActivity;
 import static com.example.jonas.grades.Utilities.*;
 import com.example.jonas.grades.DB.DB;
@@ -36,15 +37,16 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.SubjectAverage.setTextColor(colorFromGrade(CurrentSemester.Subjects.get(position).getSubjectAverage()));
         holder.SubjectAverage.setText(String.valueOf(round(CurrentSemester.Subjects.get(position).getSubjectAverage(), 1)));
+        final Subject currentSubject = CurrentSemester.Subjects.get(position);
         ((LinearLayout)holder.SubjectAverage.getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivityContext(), SubjectActivity.class);
                 Gson gson = new Gson();
-                String jsonString = gson.toJson(CurrentSemester.Subjects.get(position));
+                String jsonString = gson.toJson(currentSubject);
                 intent.putExtra("Subject",  jsonString);
                 getActivityContext().startActivity(intent);
             }
@@ -52,12 +54,12 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         ((LinearLayout)holder.SubjectAverage.getParent()).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                new Dialog(getTexts().getString(R.string.rename), Dialog.STRING_INPUT_DIALOG, CurrentSemester.Subjects.get(position).Name) {
+                new Dialog(getTexts().getString(R.string.rename), Dialog.STRING_INPUT_DIALOG, currentSubject.Name) {
                     @Override
                     public double onClick() {
-                        CurrentSemester.Subjects.get(position).Name = Input.getText().toString();
+                        currentSubject.Name = Input.getText().toString();
                         DB.update(
-                                CurrentSemester.Subjects.get(position).ID,
+                                currentSubject.ID,
                                 Input.getText().toString(),
                                 GradesContract.SubjectEntry.TABLE_NAME,
                                 GradesContract.SubjectEntry.COLUMN_NAME_NAME,
