@@ -14,6 +14,9 @@ import java.math.RoundingMode;
 public class Utilities {
 
     private static Resources Texts;
+
+
+
     private static Context ActivityContext;
     private static AppBarLayout Bar;
 
@@ -39,21 +42,22 @@ public class Utilities {
         return Color.parseColor(colorString);
     }
 
-    public static void setBarInfo(double average){
-        Bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
-        Bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
-        ((TextView)Bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
-    }
-
-    public static void updateValues(Context activityContext, AppBarLayout appBarLayout, double average){
-        ActivityContext = activityContext;
-        Bar = appBarLayout;
-        setBarInfo(average);
-    }
+//    public static void setBarInfo(double average){
+//        Bar.findViewById(R.id.toolbar).setBackgroundColor(colorFromGrade(average));
+//        Bar.findViewById(R.id.toolbar_layout).setBackgroundColor(colorFromGrade(average));
+//        ((TextView)Bar.findViewById(R.id.bar_average)).setText(String.valueOf(average));
+//    }
+//
+//    public static void updateValues(Context activityContext, AppBarLayout appBarLayout, double average){
+//        ActivityContext = activityContext;
+//        Bar = appBarLayout;
+//        setBarInfo(average);
+//    }
 
     public static void setTexts(Resources texts) {
         Texts = texts;
     }
     public static Resources getTexts(){return  Texts;}
     public static Context getActivityContext() { return ActivityContext; }
+    public static void setActivityContext(Context activityContext) { ActivityContext = activityContext; }
 }

@@ -119,7 +119,7 @@ public abstract class Dialog extends android.app.Dialog{
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setBarInfo(Dialog.this.onClick());
+//                setBarInfo(Dialog.this.onClick());
                 Toast.makeText(ActivityContext, getTexts().getString(R.string.saved), Toast.LENGTH_SHORT).show();
                 dismiss();
             }

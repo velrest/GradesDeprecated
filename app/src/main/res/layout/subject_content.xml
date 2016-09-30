@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".SemesterActivity"
+    tools:context=".SubjectActivity"
     android:fillViewport="true"
-    tools:showIn="@layout/activity_semester">
+    tools:showIn="@layout/subject">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/subject_list_view"

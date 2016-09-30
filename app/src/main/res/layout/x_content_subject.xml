@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SubjectActivity"
     android:fillViewport="true"
-    tools:showIn="@layout/activity_subject">
+    tools:showIn="@layout/x_activity_subject">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/exam_list_view"
